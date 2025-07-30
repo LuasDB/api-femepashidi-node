@@ -7,7 +7,7 @@ import { logErrors,errorHandler} from './middlewares/hanldeErrors.js'
 import { client } from './db/mongoClient.js'
 import swaggerUi from 'swagger-ui-express'
 import { readFile } from 'fs/promises'
-import { events, skaters,register,associations} from './migration/migrations.js'
+import { events, skaters,register,associations,announcements} from './migration/migrations.js'
 
 const data = await readFile('./api_documentation_swaggerUi.json', 'utf-8')
 const swaggerDoc = JSON.parse(data)
@@ -84,8 +84,9 @@ const startServer = async ()=>{
           case 'associations':
             data=associations()
             break;
-
-
+            case 'announcements':
+            data=announcements()
+            break;
           default:
             break;
         }

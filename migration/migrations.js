@@ -1,8 +1,11 @@
+import path from "path";
 import { db } from "../db/mongoClient.js"
 import fs from "fs"
 
+const pathFile = './database.json'
+
 const skaters = async () => {
-  const data = JSON.parse(fs.readFileSync('./../db.json', 'utf-8'));
+  const data = JSON.parse(fs.readFileSync(pathFile, 'utf-8'));
   const skaters = data.skaters;
 
   const newData = await Promise.all(skaters.map(async (item) => {
@@ -27,7 +30,7 @@ const skaters = async () => {
 };
 
 const events = async()=>{
-  const data = JSON.parse(fs.readFileSync('./utils/db.json','utf-8'))
+  const data = JSON.parse(fs.readFileSync(pathFile,'utf-8'))
   const events = data.events
 
   const newData = events.map(item=>{
@@ -46,7 +49,7 @@ const events = async()=>{
 }
 
 const register = async()=>{
-  const data = JSON.parse(fs.readFileSync('./utils/db.json','utf-8'))
+  const data = JSON.parse(fs.readFileSync(pathFile,'utf-8'))
   const register = data.register
 
   const newData = register.map(item=>{
@@ -64,7 +67,7 @@ const register = async()=>{
 }
 
 const associations = async()=>{
-  const data = JSON.parse(fs.readFileSync('./utils/db.json','utf-8'))
+  const data = JSON.parse(fs.readFileSync(pathFile,'utf-8'))
   const associations = data.associations
 
   const newData = associations.map(item=>{
@@ -82,6 +85,40 @@ const associations = async()=>{
   }
 }
 
-export {events,skaters,register,associations}
+const announcements = async()=>{
+  const data = JSON.parse(fs.readFileSync(pathFile,'utf-8'))
+  const announcements = data.announcements
+
+  const newData = announcements.map(item=>{
+    const copia = {...item}
+    if(copia.status === 'Baja'){
+      if(fs.existsSync(`./uploads/announcements/${copia.img}`)){
+        fs.unlinkSync(`./uploads/announcements/${copia.img}`)
+        console.log('Eliminado',`./uploads/announcements/${copia.img}`)
+      }
+      if(fs.existsSync(`./uploads/announcements/${copia.doc}`)){
+        fs.unlinkSync(`./uploads/announcements/${copia.doc}`)
+        console.log('Eliminado',`./uploads/announcements/${copia.doc}`)
+      }
+      return
+    }
+    delete copia.id
+    copia.img = path.join('uploads/announcements',copia.img)
+    copia.doc = path.join('uploads/announcements',copia.doc)
+    return copia
+  })
+
+  try {
+    const news = await db.collection('announcements').insertMany(newData)
+    console.log(news)
+  } catch (error) {
+    console.log('algo no salio en migracion')
+    throw new Error('Salio mal la exportación')
+  }
+}
+
+announcements
+
+export {events,skaters,register,associations,announcements}
 
 

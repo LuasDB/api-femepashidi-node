@@ -1,7 +1,7 @@
 import Boom from "@hapi/boom"
 import { db } from "../db/mongoClient.js"
 import { ObjectId } from "mongodb"
-
+import fs from 'fs'
 class Announcements{
   constructor(){}
 
@@ -84,14 +84,37 @@ class Announcements{
 
   async deleteOne(id) {
     try {
-      if (!ObjectId.isValid(id)) {
-        throw Boom.badRequest('Invalid ID');
+      console.log('ID A ELIMINAR',id)
+
+      const announcement = await db.collection('announcements').findOne({_id:new ObjectId(id)})
+      if(!announcement){
+        throw Boom.badRequest('No se encontro el comunicado')
       }
 
       const result = await db.collection('announcements').deleteOne({ _id: new ObjectId(id) });
 
+
       if (result.deletedCount === 0) {
         throw Boom.notFound('Announcement not found');
+      }
+
+      if(fs.existsSync(announcement.img)){
+        fs.unlinkSync(announcement.img)
+        console.log('Eliminado',announcement.img)
+      }
+      if(fs.existsSync(`./uploads/announcements/${announcement.img}`)){
+        fs.unlinkSync(`./uploads/announcements/${announcement.img}`)
+        console.log('Eliminado',`./uploads/announcements/${announcement.img}`)
+      }
+      if(fs.existsSync(announcement.doc)){
+        fs.unlinkSync(announcement.doc)
+        console.log('Eliminado',announcement.doc)
+
+      }
+      if(fs.existsSync(`./uploads/announcements/${announcement.doc}`)){
+        fs.unlinkSync(`./uploads/announcements/${announcement.doc}`)
+        console.log('Eliminado',`./uploads/announcements/${announcement.doc}`)
+
       }
 
       return result;
