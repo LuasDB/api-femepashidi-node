@@ -2,7 +2,7 @@ import { db } from "../db/mongoClient.js"
 import fs from "fs"
 
 const skaters = async () => {
-  const data = JSON.parse(fs.readFileSync('./utils/db.json', 'utf-8'));
+  const data = JSON.parse(fs.readFileSync('./../db.json', 'utf-8'));
   const skaters = data.skaters;
 
   const newData = await Promise.all(skaters.map(async (item) => {

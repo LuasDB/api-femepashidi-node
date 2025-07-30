@@ -86,13 +86,13 @@ router.get('/by-curp/:curp',uploadFiles,async(req, res, next)=>{
 router.get('/approve/:curp/:status',uploadFiles,async(req, res, next)=>{
   try {
     const approve = await skaters.aprove(req.params.curp,req.params.status)
-    res.json(approve)
+    // res.json(approve)
 
-  //  if(approve){
-  //       res.redirect('https://www.femepashidi.com.mx/inicio/respuesta.html');
-  //     }else{
-  //       res.redirect('https://www.femepashidi.com.mx/inicio/respuesta.html');
-  //     }
+   if(approve){
+        res.redirect('https://www.femepashidi.com.mx/inicio/respuesta.html');
+      }else{
+        res.redirect('https://www.femepashidi.com.mx/inicio/respuesta.html');
+      }
 
   } catch (error) {
     next(error)

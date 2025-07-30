@@ -7,7 +7,7 @@ const sendMail = async({from, to, subject, data, templateEmail, attachments = []
   const transporter = nodemailer.createTransport({
     host: config.hostEmailSupport,
     port: config.portEmailSupport,
-    secure: false, // false para puerto 587, true para 465
+    secure: true, // false para puerto 587, true para 465
     auth: {
       user: config.emailSupport,
       pass: config.passSupport

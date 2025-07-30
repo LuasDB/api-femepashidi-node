@@ -3,6 +3,7 @@ import { db } from './../db/mongoClient.js'
 import Boom from '@hapi/boom'
 import { sendMail } from '../utils/sendMail.js'
 import path from 'path'
+import  config  from './../config.js'
 
 class Collection{
   constructor(){
@@ -89,17 +90,23 @@ class Collection{
   async sendEmail(body){
     const { email,name, message } = body
 
-    await sendMail({
+    try {
+      const mail= await sendMail({
+      from:config.emailSupport,
       to:email,
       subject:'Test de envio de mail',
       data:{email,name,message,link:'http://localhost:3000/uploads/pruebas/C.V.MARIOSAULDELAFUENTEBARRUETA__esp2025.pdf'},
       templateEmail:'test',
       attachments:[{
         filename:'samartech',
-        path:path.join('uploads/pruebas/samartech.png'),
+        path:path.join('emails/samartech.png'),
         cid:'samartech'
       }]
     })
+    return mail
+    } catch (error) {
+      throw error
+    }
 
 
   }
