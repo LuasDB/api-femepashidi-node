@@ -14,8 +14,8 @@ class Auth{
   async create(data){
 
     try {
-      const { name, email, password } = data
-      if(!name || !email ){
+      const { nombre, email, password  } = data
+      if(!nombre || !email ){
         throw Boom.badData('Todos los datos son necesarios')
       }
 
@@ -85,7 +85,7 @@ class Auth{
       }
 
       const payload = { userId:user._id, email:user.email, nombre:user.name}
-      const token = jwt.sign(payload,this.jwtSecret,{ expiresIn:this.jwtExpiration})
+      const token = jwt.sign(payload,config.jwtSecret,{ expiresIn:'1h'})
 
       return token
 

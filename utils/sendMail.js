@@ -3,24 +3,25 @@ import hbs from 'nodemailer-express-handlebars'
 import path from 'path'
 import config from './../config.js'
 
-const sendMail = async({from,to,subject,data,templateEmail,attachments=[]})=>{
-
+const sendMail = async({from, to, subject, data, templateEmail, attachments = []}) => {
   const transporter = nodemailer.createTransport({
-    service:config.serviceEmail,
-    auth:{
-      user:config.emailSupport,
-      pass:config.passSupport
+    host: config.hostEmailSupport,
+    port: config.portEmailSupport,
+    secure: false, // false para puerto 587, true para 465
+    auth: {
+      user: config.emailSupport,
+      pass: config.passSupport
     }
   })
 
-  transporter.use('compile',hbs({
-    viewEngine:{
-      extname:'.hbs',
-      partialsDir:path.resolve('./emails'),
-      defaultLayout:false
+  transporter.use('compile', hbs({
+    viewEngine: {
+      extname: '.hbs',
+      partialsDir: path.resolve('./emails'),
+      defaultLayout: false
     },
-    viewPath:path.resolve('./emails'),
-    extName:'.hbs'
+    viewPath: path.resolve('./emails'),
+    extName: '.hbs'
   }))
 
   try {
@@ -28,14 +29,26 @@ const sendMail = async({from,to,subject,data,templateEmail,attachments=[]})=>{
       from,
       to,
       subject,
-      template:templateEmail,
-      context:data,
+      template: templateEmail,
+      context: data,
       attachments
     })
-    console.log('Respuesta del envio de mail',sendedEmail)
+
+
+
+    return {
+      success: true,
+      message: 'Email enviado',
+      info: sendedEmail
+    }
 
   } catch (error) {
-    console.error(error)
+
+    return {
+      success: false,
+      message: 'Falla al enviar correo',
+      error: error.message
+    }
   }
 }
 

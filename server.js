@@ -7,11 +7,12 @@ import { logErrors,errorHandler} from './middlewares/hanldeErrors.js'
 import { client } from './db/mongoClient.js'
 import swaggerUi from 'swagger-ui-express'
 import { readFile } from 'fs/promises'
+import { events, skaters,register,associations} from './migration/migrations.js'
 
 const data = await readFile('./api_documentation_swaggerUi.json', 'utf-8')
 const swaggerDoc = JSON.parse(data)
 
-const port = 3000 || process.env.PORT
+const port = process.env.PORT || 3000
 //Express
 const app = express()
 app.use(express.urlencoded({ extended: true }))
@@ -66,6 +67,33 @@ const startServer = async ()=>{
     app.use(errorHandler)
 
     app.use('/uploads', express.static('uploads'))
+    app.use('/migration/:collection',(req,res)=>{
+      try{
+        const collection = req.params.collection
+        let data
+        switch (collection) {
+          case 'skaters':
+            data=skaters()
+            break;
+          case 'events':
+            data=events()
+            break;
+          case 'register':
+            data=register()
+            break;
+          case 'associations':
+            data=associations()
+            break;
+
+
+          default:
+            break;
+        }
+      res.json({success:true,data})}
+      catch(error){
+        console.error('[MIGRATION]',error)
+      }
+    })
 
     httpServer.listen(3000,()=>{
       console.log(`Servidor iniciado en puerto :${port}`)
