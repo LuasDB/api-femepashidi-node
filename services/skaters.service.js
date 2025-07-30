@@ -199,7 +199,7 @@ class Skaters{
       let response
       if(status){
         response = await sendMail({
-          from:'saul.delafuente@samar-technologies.com',
+          from:config.emailSupport,
           to:skater.correo,
           subject:'Aceptación de registro en plataforma FEMEPASHIDI',
           data:{name:`${skater.nombre} ${skater.apellido_paterno}`},
@@ -215,7 +215,7 @@ class Skaters{
 
       }else{
         response = await sendMail({
-          from:'saul.delafuente@samar-technologies.com',
+          from:config.emailSupport,
           to:skater.correo,
           subject:'Registro en plataforma FEMEPASHIDI',
           data:{name:`${skater.nombre} ${skater.apellido_paterno}`},
@@ -234,7 +234,7 @@ class Skaters{
         throw Boom.badRequest("Can't send email to confirm")
       }
 
-      return this.updateOneByCurp(skater.curp,{verificacion:status})
+      return this.updateOneByCurp(skater.curp,{verificacion:status,id_asociacion:skater.id_asociacion})
 
     } catch (error) {
       if(Boom.isBoom(error)){
