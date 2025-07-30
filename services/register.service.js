@@ -43,7 +43,7 @@ class Register{
       )
     }
     console.log('[4]',files)
-    return
+
     delete data.association
     delete data.event
     delete data.user
