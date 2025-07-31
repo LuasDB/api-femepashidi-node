@@ -89,9 +89,9 @@ const announcements = async()=>{
   const data = JSON.parse(fs.readFileSync(pathFile,'utf-8'))
   const announcements = data.announcements
 
-  const newData = announcements.map(item=>{
+  const newData = announcements.filter(item=>item.status!=='Baja').map(item=>{
     const copia = {...item}
-    if(copia.status === 'Baja'){
+
       if(fs.existsSync(`./uploads/announcements/${copia.img}`)){
         fs.unlinkSync(`./uploads/announcements/${copia.img}`)
         console.log('Eliminado',`./uploads/announcements/${copia.img}`)
@@ -100,8 +100,6 @@ const announcements = async()=>{
         fs.unlinkSync(`./uploads/announcements/${copia.doc}`)
         console.log('Eliminado',`./uploads/announcements/${copia.doc}`)
       }
-      return
-    }
     delete copia.id
     copia.img = path.join('uploads/announcements',copia.img)
     copia.doc = path.join('uploads/announcements',copia.doc)
