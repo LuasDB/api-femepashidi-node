@@ -8,7 +8,7 @@ import { client } from './db/mongoClient.js'
 import swaggerUi from 'swagger-ui-express'
 import { readFile } from 'fs/promises'
 import { events, skaters,register,associations,announcements} from './migration/migrations.js'
-import upload from './configurations/multer-config.js'
+import uploadFilesMigration from './middlewares/multer-migration.js'
 
 const data = await readFile('./api_documentation_swaggerUi.json', 'utf-8')
 const swaggerDoc = JSON.parse(data)
@@ -92,16 +92,17 @@ const startServer = async ()=>{
        next()
       }
     })
-    app.use('/upload-files',upload('cosas').any(),(req, res,next)=>{
-      try {
-        res.status(201).json({
-        files:req.files,data:req.body,success:true
-      })
-      } catch (error) {
-        next()
-      }
-
-    })
+    app.use('/upload-files/:folder', uploadFilesMigration, (req, res, next) => {
+  try {
+    res.status(201).json({
+      files: req.files,
+      data: req.body,
+      success: true,
+    });
+  } catch (error) {
+    next(error);
+  }
+});
     app.use(logErrors)
     app.use(errorHandler)
 
