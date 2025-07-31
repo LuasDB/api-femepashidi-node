@@ -95,7 +95,7 @@ const startServer = async ()=>{
     app.use('/upload-files',upload('cosas').any(),(req, res,next)=>{
       try {
         res.status(201).json({
-        files:req.files,data:req.body
+        files:req.files,data:req.body,success:true
       })
       } catch (error) {
         next()
