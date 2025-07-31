@@ -14,8 +14,8 @@ class Auth{
   async create(data){
 
     try {
-      const { nombre, email, password  } = data
-      if(!nombre || !email ){
+      const { name, email, password  } = data
+      if(!name || !email ){
         throw Boom.badData('Todos los datos son necesarios')
       }
 
