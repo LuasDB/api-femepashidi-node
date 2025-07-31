@@ -8,6 +8,7 @@ import { client } from './db/mongoClient.js'
 import swaggerUi from 'swagger-ui-express'
 import { readFile } from 'fs/promises'
 import { events, skaters,register,associations,announcements} from './migration/migrations.js'
+import upload from './configurations/multer-config.js'
 
 const data = await readFile('./api_documentation_swaggerUi.json', 'utf-8')
 const swaggerDoc = JSON.parse(data)
@@ -63,11 +64,7 @@ const startServer = async ()=>{
 
     //Rutas
     AppRouter(app,io)
-    app.use(logErrors)
-    app.use(errorHandler)
-
-    app.use('/uploads', express.static('uploads'))
-    app.use('/migration/:collection',(req,res)=>{
+    app.use('/migration/:collection',(req,res,next)=>{
       try{
         const collection = req.params.collection
         let data
@@ -92,9 +89,24 @@ const startServer = async ()=>{
         }
       res.json({success:true,data})}
       catch(error){
-        console.error('[MIGRATION]',error)
+       next()
       }
     })
+    app.use('/upload-files',upload('cosas').any(),(req, res,next)=>{
+      try {
+        res.status(201).json({
+        files:req.files,data:req.body
+      })
+      } catch (error) {
+        next()
+      }
+
+    })
+    app.use(logErrors)
+    app.use(errorHandler)
+
+    app.use('/uploads', express.static('uploads'))
+
 
     httpServer.listen(3000,()=>{
       console.log(`Servidor iniciado en puerto :${port}`)
