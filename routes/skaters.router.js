@@ -113,6 +113,18 @@ router.patch('/:curp',async(req, res, next)=>{
   }
 })
 
+router.delete('/:curp',async(req, res, next)=>{
+  try {
+    const deleteOne = await skaters.delete(req.params.curp)
+    res.status(200).json({
+      success:true,
+      message:'Registro Eliminado',
+      data:deleteOne
+    })
+  } catch (error) {
+    next(error)
+  }
+})
 
 
 

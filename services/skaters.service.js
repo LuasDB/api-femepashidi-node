@@ -244,6 +244,19 @@ class Skaters{
           }
   }
 
-}
+  async delete(curp){
+    try {
+      const deleteOne = await db.collection('skaters').deleteOne({curp})
+      return deleteOne
+    } catch (error) {
+      if(Boom.isBoom(error)){
+          throw error
+        }
+        throw Boom.badImplementation('Can´t update the register')
+      }
+    }
+  }
+
+
 
 export default Skaters
