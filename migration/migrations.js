@@ -115,8 +115,29 @@ const announcements = async()=>{
   }
 }
 
-announcements
+const results = async()=>{
+  const data = JSON.parse(fs.readFileSync(pathFile,'utf-8'))
+  const results = data.results
 
-export {events,skaters,register,associations,announcements}
+  const newData = results.map(item=>{
+    const copia = {...item}
+    delete copia.id
+    copia.img = path.join('uploads/announcements',copia.img)
+    return copia
+  })
+
+  try {
+    const news = await db.collection('results').insertMany(newData)
+    console.log(news)
+  } catch (error) {
+    console.log('algo no salio en migracion')
+    throw new Error('Salio mal la exportación')
+  }
+}
+
+
+
+
+export {events,skaters,register,associations,announcements,results}
 
 

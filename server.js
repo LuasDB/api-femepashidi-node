@@ -7,7 +7,7 @@ import { logErrors,errorHandler} from './middlewares/hanldeErrors.js'
 import { client } from './db/mongoClient.js'
 import swaggerUi from 'swagger-ui-express'
 import { readFile } from 'fs/promises'
-import { events, skaters,register,associations,announcements} from './migration/migrations.js'
+import { events, skaters,register,associations,announcements,results} from './migration/migrations.js'
 import uploadFilesMigration from './middlewares/multer-migration.js'
 
 const data = await readFile('./api_documentation_swaggerUi.json', 'utf-8')
@@ -84,6 +84,10 @@ const startServer = async ()=>{
             case 'announcements':
             data=announcements()
             break;
+            case 'results':
+            data=results()
+            break;
+
           default:
             break;
         }

@@ -6,7 +6,7 @@ import associationsRouter from './associations.router.js'
 import eventsRouter from './events.router.js'
 import announcementsRouter from './announcements.router.js'
 import registerRouter from './register.router.js'
-
+import resultsRouter from './results.router.js'
 
 
 const router = express.Router()
@@ -21,6 +21,8 @@ const AppRouter = (app,io) => {
   router.use('/events',eventsRouter)
   router.use('/announcements', announcementsRouter)
   router.use('/register',registerRouter)
+  router.use('/results',resultsRouter)
+
   //Agregar las rutas necesarias
 
 }

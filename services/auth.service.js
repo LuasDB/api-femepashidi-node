@@ -84,7 +84,7 @@ class Auth{
         throw Boom.unauthorized('Email o passwor incorrectos')
       }
 
-      const payload = { userId:user._id, email:user.email, nombre:user.name}
+      const payload = { userId:user._id, email:user.email, name:user.name}
       const token = jwt.sign(payload,config.jwtSecret,{ expiresIn:'1h'})
 
       return token
