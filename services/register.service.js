@@ -11,99 +11,121 @@ import { formatoFecha } from '../configurations/formats.js'
 class Register{
   constructor(){}
 
-  async create(data,files){
-    try {
-
-      const dataParse={
-      user:JSON.parse(data.user),
-      event:JSON.parse(data.event),
-      association:JSON.parse(data.association),
+  async create(data, files) {
+  try {
+    // Validar existencia de campos requeridos
+    if (!data.user || !data.event || !data.association) {
+      throw Boom.badRequest('Faltan datos requeridos para el registro');
     }
 
+    const dataParse = {
+      user: JSON.parse(data.user),
+      event: JSON.parse(data.event),
+      association: JSON.parse(data.association),
+    };
 
-    console.log('[1]',dataParse)
-    if(!dataParse.user.verificacion){
-      throw Boom.badImplementation('Tu solicitud de registro aun no ha sido aprobada')
+    if (!dataParse.user.verificacion) {
+      throw Boom.badImplementation('Tu solicitud de registro aun no ha sido aprobada');
     }
-    const curp = dataParse.user.curp
-    console.log('[2]',curp)
 
-    if(files){
-      dataParse.user.img = files.foto[0]
+    const curp = dataParse.user.curp;
+    if (!curp) {
+      throw Boom.badRequest('El usuario no tiene CURP');
+    }
 
-      if(data.lastFoto){
-        if(fs.existsSync(data.lastFoto)){
-          delete data?.foto
-          fs.unlinkSync(data.lastFoto)
-        }
+    // Validar y actualizar foto si existe
+    if (files && files.foto && Array.isArray(files.foto) && files.foto[0]) {
+      dataParse.user.img = files.foto[0];
+
+      if (data.lastFoto && fs.existsSync(data.lastFoto)) {
+        delete data.foto;
+        fs.unlinkSync(data.lastFoto);
       }
       await db.collection('skaters').updateOne(
-        {curp},
-        {$set: {img:files.foto[0] }}
-      )
+        { curp },
+        { $set: { img: files.foto[0] } }
+      );
     }
-    console.log('[4]',files)
 
-    delete data.association
-    delete data.event
-    delete data.user
+    // Eliminar campos innecesarios de data
+    delete data.association;
+    delete data.event;
+    delete data.user;
 
-    const isRegistered = await db.collection('register').find({curp,'event.nombre':dataParse.event.nombre }).toArray()
-    if(dataParse.user.categoria.toLowerCase() !== 'adulto' && isRegistered.length > 0){
-      throw Boom.badRequest('El usuario ya esta registrado en este evento, espera la respuesta que se enviará a tu correo')
+    // Validar registro previo
+    const isRegistered = await db.collection('register').find({
+      curp,
+      'event.nombre': dataParse.event.nombre,
+    }).toArray();
+
+    if (
+      dataParse.user.categoria &&
+      dataParse.user.categoria.toLowerCase() !== 'adulto' &&
+      isRegistered.length > 0
+    ) {
+      throw Boom.badRequest('El usuario ya está registrado en este evento, espera la respuesta que se enviará a tu correo');
     }
-    const create = await db.collection('register').insertOne({...data,...dataParse})
-    console.log('[4]',create.insertedId)
-    if(create.insertedId){
+
+    // Insertar registro
+    const create = await db.collection('register').insertOne({ ...data, ...dataParse });
+
+    if (create.insertedId) {
+      // Validar que config.server tenga protocolo
+      let serverUrl = config.server;
+      if (!/^https?:\/\//.test(serverUrl)) {
+        serverUrl = 'https://' + serverUrl;
+      }
+
       const emailAssociation = await sendMail({
-                from:config.emailSupport,
-                to:dataParse.association.correo,
-                subject:'Inscripción de participante a competencia',
-                data:{
-                  association:dataParse.association.nombre,
-                  name:dataParse.association.representante,
-                  nameSkater:`${dataParse.user.nombre} ${dataParse.user.apellido_paterno} ${dataParse.user.apellido_materno}`,
-                  nameEvent:dataParse.event.nombre,
-                  curp:dataParse.user.curp,
-                  dateStart:dataParse.event.fecha_inicio,
-                  dateEnd:dataParse.event.fecha_fin,
-                  level:data.nivel_actual,
-                  category:data.categoria,
-                  id:create.insertedId,
-                  server:config.server
-                },
-                templateEmail:'InscripcionSkaterAsociation',
-                attachments:[
-                  {
-                    filename:'encabezado',
-                    path:path.join('emails/encabezado.png'),
-                    cid:'encabezado'
-                  },
-                  {
-                    filename:'ACEPTAR',
-                    path:path.join('emails/ACEPTAR.png'),
-                    cid:'aceptar'
-                  },
-                  {
-                    filename:'RECHAZAR',
-                    path:path.join('emails/RECHAZAR.png'),
-                    cid:'rechazar'
-                  }
-                ]
-      })
-      if(emailAssociation.success){
-        return create
-      }else{
-        throw Boom.badGateway('No se logro entregar el mail')
+        from: config.emailSupport,
+        to: dataParse.association.correo,
+        subject: 'Inscripción de participante a competencia',
+        data: {
+          association: dataParse.association.nombre,
+          name: dataParse.association.representante,
+          nameSkater: `${dataParse.user.nombre} ${dataParse.user.apellido_paterno} ${dataParse.user.apellido_materno}`,
+          nameEvent: dataParse.event.nombre,
+          curp: dataParse.user.curp,
+          dateStart: dataParse.event.fecha_inicio,
+          dateEnd: dataParse.event.fecha_fin,
+          level: data.nivel_actual,
+          category: data.categoria,
+          id: create.insertedId,
+          server: serverUrl,
+        },
+        templateEmail: 'InscripcionSkaterAsociation',
+        attachments: [
+          {
+            filename: 'encabezado',
+            path: path.join('emails/encabezado.png'),
+            cid: 'encabezado',
+          },
+          {
+            filename: 'ACEPTAR',
+            path: path.join('emails/ACEPTAR.png'),
+            cid: 'aceptar',
+          },
+          {
+            filename: 'RECHAZAR',
+            path: path.join('emails/RECHAZAR.png'),
+            cid: 'rechazar',
+          },
+        ],
+      });
+
+      if (emailAssociation.success) {
+        return create;
+      } else {
+        throw Boom.badGateway('No se logró entregar el mail');
       }
     }
-    } catch (error) {
-      if(Boom.isBoom(error)){
-        throw error
-      }
-      throw Boom.badImplementation('Somethink was wrong! ')
+  } catch (error) {
+    if (Boom.isBoom(error)) {
+      throw error;
     }
+    throw Boom.badImplementation('Something was wrong!');
   }
+}
 
   async findByEvent(event){
     try {
