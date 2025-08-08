@@ -1,6 +1,7 @@
 import path from "path";
 import { db } from "../db/mongoClient.js"
 import fs from "fs"
+import obtenerCategoria from "../configurations/categories.js";
 
 const pathFile = './database.json'
 
@@ -12,10 +13,12 @@ const skaters = async () => {
     const copia = { ...item };
     delete copia.id;
     copia.img=null
+    copia.nivel_actual = copia.nivel_actual.toUpperCase()
+
+    copia.categoria = obtenerCategoria(copia.fecha_nacimiento,copia.nivel_actual)
 
     const association = await db.collection('associations').findOne({ nombre: copia.asociacion.nombre });
     copia.id_asociacion = association?._id || null;
-    copia.nivel_actual = copia.nivel_actual.toUpperCase()
 
     return copia;
   }));

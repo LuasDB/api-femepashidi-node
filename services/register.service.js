@@ -56,7 +56,7 @@ class Register{
     console.log('[4]',create.insertedId)
     if(create.insertedId){
       const emailAssociation = await sendMail({
-                from:'saul.delafuente@samar-technologies.com',
+                from:config.emailSupport,
                 to:dataParse.association.correo,
                 subject:'Inscripción de participante a competencia',
                 data:{
@@ -160,7 +160,7 @@ class Register{
         const register = await db.collection('register').findOne({_id:new ObjectId(id)})
 
         const emailSkater = await sendMail({
-        from:'saul.delafuente@samar-technologies.com',
+        from:config.emailSupport,
         to:register.user.correo,
         subject:'Aceptación de Inscripción a competencia',
         data:{

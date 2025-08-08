@@ -28,7 +28,7 @@ class Skaters{
 
       if(result.insertedId){
         const emailSkater = await sendMail({
-          from:'saul.delafuente@samar-technologies.com',
+          from:config.emailSupport,
           to:data.correo,
           subject:'Registro a plataforma FEMEPASHIDI',
           data:{name:`${data.nombre} ${data.apellido_paterno}`},
@@ -43,7 +43,7 @@ class Skaters{
         })
 
         const emailAssociation = await sendMail({
-          from:'saul.delafuente@samar-technologies.com',
+          from:config.emailSupport,
           to:newSkater.asociacion.correo,
           subject:'Registro a plataforma FEMEPASHIDI',
           data:{
