@@ -7,6 +7,7 @@ import eventsRouter from './events.router.js'
 import announcementsRouter from './announcements.router.js'
 import registerRouter from './register.router.js'
 import resultsRouter from './results.router.js'
+import lettersRouter from './letters.router.js'
 
 
 const router = express.Router()
@@ -22,6 +23,7 @@ const AppRouter = (app,io) => {
   router.use('/announcements', announcementsRouter)
   router.use('/register',registerRouter)
   router.use('/results',resultsRouter)
+  router.use('/letters',lettersRouter)
 
   //Agregar las rutas necesarias
 
