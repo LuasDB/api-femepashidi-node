@@ -357,17 +357,17 @@ class Letters {
         ],
       })
       console.log(mailPresident)
-      // if (!mailPresident.success) {
-      //   throw Boom.badGateway('No se logró entregar el mail');
-      // }else{
-      //   fs.unlink(letter.convocatoria.path, (err) => {
-      //     if (err) {
-      //       console.error('Error al eliminar el archivo:', err);
-      //       return;
-      //     }
-      //     console.log('Archivo eliminado con éxito');
-      //   });
-      // }
+      if (!mailPresident.success) {
+        throw Boom.badGateway('No se logró entregar el mail');
+      }else{
+        fs.unlink(data.convocatoria.path, (err) => {
+          if (err) {
+            console.error('Error al eliminar el archivo:', err);
+            return;
+          }
+          console.log('Archivo eliminado con éxito');
+        });
+      }
 
       return true;
     } catch (error) {

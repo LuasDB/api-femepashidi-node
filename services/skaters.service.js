@@ -111,6 +111,9 @@ class Skaters{
     try {
       curp = curp.toUpperCase()
       const isCurp = await db.collection('skaters').findOne({curp})
+      if(!isCurp){
+        throw Boom.notFound('The CURP was not found')
+      }
       return isCurp
     } catch (error) {
       if(Boom.isBoom(error)){
