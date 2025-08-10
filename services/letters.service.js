@@ -328,7 +328,7 @@ class Letters {
 
 
       const mailPresident = await sendMail({
-        to:'saul.delafuente@samar-technologies.com',
+        to:'analuisa@femepashidi.com.mx',
         from: config.emailSupport,
         subject: `Solicitud de Carta Permiso ${dataMail.folio} - ${dataMail.nombre} ${dataMail.apellidoPaterno}`,
         templateEmail: 'letters/mailPresidencia',
