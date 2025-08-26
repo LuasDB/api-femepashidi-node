@@ -58,14 +58,16 @@ class Register{
       'event.nombre': dataParse.event.nombre,
     }).toArray();
 
+    console.log('Lo que se obtiene',isRegistered,!data.firstLevel.toLowerCase().includes('adulto'))
+
     if (
-      !
-      data.firstLevel.toLowerCase().includes('adulto') ||
+      !data.firstLevel.toLowerCase().includes('adulto') &&
       isRegistered.length > 0
     ) {
       console.log('el usuario ya esta creado',dataParse.user.categoria)
       throw Boom.badRequest('El usuario ya está registrado en este evento, espera la respuesta que se enviará a tu correo');
     }
+
 
     // Insertar registro
     const create = await db.collection('register').insertOne({ ...data, ...dataParse });
