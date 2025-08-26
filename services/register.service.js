@@ -54,7 +54,7 @@ class Register{
 
     // Validar registro previo
     const isRegistered = await db.collection('register').find({
-      curp,
+      'user.curp':curp,
       'event.nombre': dataParse.event.nombre,
     }).toArray();
 
