@@ -8,6 +8,7 @@ import announcementsRouter from './announcements.router.js'
 import registerRouter from './register.router.js'
 import resultsRouter from './results.router.js'
 import lettersRouter from './letters.router.js'
+import galleryRouter from './gallery.router.js'
 
 
 const router = express.Router()
@@ -24,6 +25,7 @@ const AppRouter = (app,io) => {
   router.use('/register',registerRouter)
   router.use('/results',resultsRouter)
   router.use('/letters',lettersRouter)
+  router.use('/gallery',galleryRouter)
 
   //Agregar las rutas necesarias
 

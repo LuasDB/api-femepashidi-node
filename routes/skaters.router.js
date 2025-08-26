@@ -113,6 +113,32 @@ router.patch('/:curp',async(req, res, next)=>{
   }
 })
 
+router.patch('/update/verification',async(req, res, next)=>{
+  try {
+    const updateOne = await skaters.updateVerifications()
+    res.status(200).json({
+      success:true,
+      message:'Registro actualizado',
+      data:updateOne
+    })
+  } catch (error) {
+    next(error)
+  }
+})
+
+router.patch('/update/createat',async(req, res, next)=>{
+  try {
+    const updateOne = await skaters.updateCreateAt()
+    res.status(200).json({
+      success:true,
+      message:'Registro actualizado',
+      data:updateOne
+    })
+  } catch (error) {
+    next(error)
+  }
+})
+
 router.delete('/:curp',async(req, res, next)=>{
   try {
     const deleteOne = await skaters.delete(req.params.curp)

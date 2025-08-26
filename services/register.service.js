@@ -59,10 +59,11 @@ class Register{
     }).toArray();
 
     if (
-      dataParse.user.categoria &&
-      dataParse.user.categoria.toLowerCase() !== 'adulto' &&
+      !
+      data.firstLevel.toLowerCase().includes('adulto') ||
       isRegistered.length > 0
     ) {
+      console.log('el usuario ya esta creado',dataParse.user.categoria)
       throw Boom.badRequest('El usuario ya está registrado en este evento, espera la respuesta que se enviará a tu correo');
     }
 

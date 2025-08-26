@@ -21,7 +21,7 @@ class Skaters{
       const newSkater = {
         img:files[0],
         ...data,
-        asociacion:JSON.parse(data.asociacion)
+        asociacion:JSON.parse(data.asociacion),
       }
 
       const result = await db.collection('skaters').insertOne(newSkater)
@@ -257,7 +257,47 @@ class Skaters{
         }
         throw Boom.badImplementation('Can´t update the register')
       }
+  }
+
+  async updateVerifications(){
+    try {
+      const result = await db.collection('skaters').aggregate([
+      { $group: { _id: "$curp", count: { $sum: 1 } } },
+      { $match: { count: { $gt: 1 } } }
+    ]).toArray();
+
+ 
+      return result
+    } catch (error) {
+      if(Boom.isBoom(error)){
+          throw error
+        }
+        throw Boom.badImplementation('Can´t update the verification')
     }
+  }
+
+  async updateCreateAt(){
+    try {
+      const result = await db.collection('skaters')
+      .find(
+        {verificacion:{$exists:false}}
+      ).toArray()
+
+      const dates = result.filter(item=>item.img)
+
+
+
+      return dates
+    } catch (error) {
+      if(Boom.isBoom(error)){
+          throw error
+        }
+        throw Boom.badImplementation('No se puede obtener')
+    }
+  }
+
+
+
   }
 
 
