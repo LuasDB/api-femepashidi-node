@@ -58,10 +58,10 @@ class Register{
       'event.nombre': dataParse.event.nombre,
     }).toArray();
 
-    console.log('Lo que se obtiene',isRegistered,!data.firstLevel.toLowerCase().includes('adulto'))
 
     if (
-      !data.firstLevel.toLowerCase().includes('adulto') &&
+      data.firstLevel &&
+      data.firstLevel.trim().toLowerCase() !== 'adulto' &&
       isRegistered.length > 0
     ) {
       console.log('el usuario ya esta creado',dataParse.user.categoria)
