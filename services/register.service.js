@@ -6,6 +6,7 @@ import { ObjectId } from 'mongodb'
 import { sendMail } from '../utils/sendMail.js'
 import config from '../config.js'
 import { formatoFecha } from '../configurations/formats.js'
+import { Console } from 'console'
 
 
 class Register{
@@ -57,16 +58,20 @@ class Register{
       'user.curp':curp,
       'event.nombre': dataParse.event.nombre,
     }).toArray();
+    console.log('[REGISTRADOS]',isRegistered)
+
+    const isAdult = data.firstLevel.trim().toLowerCase().includes('adulto')
+    console.log('[ADULTO?]',isAdult)
 
 
     if (
-      data.firstLevel &&
-      data.firstLevel.trim().toLowerCase() !== 'adulto' &&
+      !isAdult &&
       isRegistered.length > 0
     ) {
       console.log('el usuario ya esta creado',dataParse.user.categoria)
       throw Boom.badRequest('El usuario ya está registrado en este evento, espera la respuesta que se enviará a tu correo');
     }
+
 
 
     // Insertar registro
