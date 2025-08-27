@@ -14,7 +14,6 @@ class Skaters{
 
     try {
       const exists = await this.getByCurp(data.curp)
-      console.log('[EXIST]',exists)
       if(exists){
         throw Boom.conflict('Skater exists in the platform')
       }
@@ -95,9 +94,7 @@ class Skaters{
   async getByCurp(curp){
     try {
       curp = curp.toUpperCase()
-      console.log('[CURP]',curp)
       const isCurp = await db.collection('skaters').findOne({curp})
-      console.log('[]',isCurp)
       return isCurp !== null
     } catch (error) {
       if(Boom.isBoom(error)){
@@ -183,10 +180,8 @@ class Skaters{
         throw Boom.notFound('The CURP was not found');
       }
 
-      console.log(updateOne);
       return updateOne;
     } catch (error) {
-      console.error('[ERROR REAL]:', error);
       if (Boom.isBoom(error)) {
         throw error.message;
       }
@@ -266,7 +261,7 @@ class Skaters{
       { $match: { count: { $gt: 1 } } }
     ]).toArray();
 
- 
+
       return result
     } catch (error) {
       if(Boom.isBoom(error)){

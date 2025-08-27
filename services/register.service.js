@@ -58,17 +58,14 @@ class Register{
       'user.curp':curp,
       'event.nombre': dataParse.event.nombre,
     }).toArray();
-    console.log('[REGISTRADOS]',isRegistered)
 
     const isAdult = data.firstLevel.trim().toLowerCase().includes('adulto')
-    console.log('[ADULTO?]',isAdult)
 
 
     if (
       !isAdult &&
       isRegistered.length > 0
     ) {
-      console.log('el usuario ya esta creado',dataParse.user.categoria)
       throw Boom.badRequest('El usuario ya está registrado en este evento, espera la respuesta que se enviará a tu correo');
     }
 
@@ -142,7 +139,6 @@ class Register{
       .collection('register')
       .find({'event.nombre':event})
       .toArray()
-      console.log(findByEvent)
 
       return findByEvent
     } catch (error) {
