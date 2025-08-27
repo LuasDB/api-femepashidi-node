@@ -45,11 +45,12 @@ const sendMail = async({from, to, subject, data, templateEmail, attachments = []
     }
 
   } catch (error) {
+    console.error(error)
 
     return {
       success: false,
       message: 'Falla al enviar correo',
-      error: error
+      error: error.message
     }
   }
 }
