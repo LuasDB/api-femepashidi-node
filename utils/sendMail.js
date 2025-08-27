@@ -1,9 +1,11 @@
 import nodemailer from 'nodemailer'
+import sgTransport from 'nodemailer-sendgrid'
 import hbs from 'nodemailer-express-handlebars'
 import path from 'path'
 import config from './../config.js'
 
 const sendMail = async({from, to, subject, data, templateEmail, attachments = []}) => {
+
   const transporter = nodemailer.createTransport({
     host: config.hostEmailSupport,
     port: config.portEmailSupport,
@@ -47,7 +49,7 @@ const sendMail = async({from, to, subject, data, templateEmail, attachments = []
     return {
       success: false,
       message: 'Falla al enviar correo',
-      error: error.message
+      error: error
     }
   }
 }
