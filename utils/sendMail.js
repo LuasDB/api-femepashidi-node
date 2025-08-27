@@ -1,5 +1,4 @@
 import nodemailer from 'nodemailer'
-import sgTransport from 'nodemailer-sendgrid'
 import hbs from 'nodemailer-express-handlebars'
 import path from 'path'
 import config from './../config.js'
