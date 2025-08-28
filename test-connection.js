@@ -1,5 +1,5 @@
 import net from 'net'
-import config from './config';
+import config from './config.js';
 const HOST = config.hostEmailSupport; // cámbialo al servidor que uses
 const PORT = config.portEmailSupport; // prueba con 465 y 25 también
 

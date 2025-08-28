@@ -9,6 +9,7 @@ import swaggerUi from 'swagger-ui-express'
 import { readFile } from 'fs/promises'
 import { events, skaters,register,associations,announcements,results} from './migration/migrations.js'
 import uploadFilesMigration from './middlewares/multer-migration.js'
+import { sendMail } from './utils/sendMailResend.js'
 
 const data = await readFile('./api_documentation_swaggerUi.json', 'utf-8')
 const swaggerDoc = JSON.parse(data)
@@ -106,7 +107,27 @@ const startServer = async ()=>{
   } catch (error) {
     next(error);
   }
-});
+    })
+    app.use('/mail',async(req,res,next)=>{
+      try {
+        sendMail({
+                  to: 'saul.delafuente@samar-technologies.com.mx',
+                  subject: 'Inscripción de participante a competencia',
+                  data: {
+                    association: 'DAOTS',
+                    name: 'DAOTS',
+                    nameEvent: 'DAOTS',
+                    curp: 'DAOTS',
+                  },
+                  templateEmail: 'InscripcionSkaterAsociation',
+                  attachments: [
+
+                  ],
+        })
+      } catch (error) {
+        next(error)
+      }
+    })
     app.use(logErrors)
     app.use(errorHandler)
 
