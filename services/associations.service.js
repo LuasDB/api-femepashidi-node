@@ -63,7 +63,9 @@ class Association{
       if (update.modifiedCount === 0) {
         throw Boom.notFound('No se actualizó ningún documento');
       }
-      console.log(update)
+
+
+
       return update
     } catch (error) {
       if(Boom.isBoom(error)){

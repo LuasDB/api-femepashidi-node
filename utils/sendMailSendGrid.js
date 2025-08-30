@@ -4,10 +4,11 @@ import path from 'path'
 import config from './../config.js'
 
 const sendMail = async({from, to, subject, data, templateEmail, attachments = []}) => {
+
   const transporter = nodemailer.createTransport({
     host: config.hostEmailSupport,
     port: config.portEmailSupport,
-    secure: true, // false para puerto 587, true para 465
+    secure: Number(config.portEmailSupport) === 465, // false para puerto 587, true para 465
     auth: {
       user: config.emailSupport,
       pass: config.passSupport

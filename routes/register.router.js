@@ -61,6 +61,19 @@ router.get('/approval/:id/:status',async(req,res,next)=>{
     next(error);
   }
 });
+
+router.get('/search/pending/resendmail',async(req,res,next)=>{
+
+  try {
+    const register = await registro.resendMail();
+    res.status(200).json({
+      success:true,
+      data:register
+    })
+  } catch (error) {
+    next(error);
+  }
+});
 router.delete('/:id',async(req,res,next)=>{
   try {
     const user = await registro.delete(req.params.id);
@@ -73,6 +86,19 @@ router.delete('/:id',async(req,res,next)=>{
     next(error);
   }
 });
+router.delete('/delete/duplicates',async(req,res,next)=>{
+  try {
+    const user = await registro.deleteDuplicates();
+    res.status(201).json({
+      success:true,
+      messsage:'Registros eliminado',
+      data:user
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
 
 // router.get('/confirmation/:id',async(req,res,next)=>{
 //   const { id } = req.params

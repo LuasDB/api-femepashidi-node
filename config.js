@@ -12,5 +12,6 @@ export default {
   emailSupport:process.env.EMAIL_SUPPORT,
   passSupport:process.env.PASS_EMAIL_SUPPORT,
   emailFrom:process.env.MAIL_FROM,
-  urlApp:process.env.URL_APP
+  urlApp:process.env.URL_APP,
+  apiKeyResend:process.env.APIKEY_RESEND
 }

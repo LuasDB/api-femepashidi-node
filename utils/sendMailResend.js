@@ -6,7 +6,7 @@ import config from '../config.js'
 
 
 const sendMail = async({from, to, subject, data, templateEmail, attachments = []}) => {
-  const resend = new Resend('re_cnTHbUwV_EgoTaNWadoqA9euzxMQDTCyp')
+  const resend = new Resend(config.apiKeyResend)
   const filePath = path.join("emails", `${templateEmail}.hbs`);
   const source = fs.readFileSync(filePath, "utf-8");
   const template = Handlebars.compile(source);
