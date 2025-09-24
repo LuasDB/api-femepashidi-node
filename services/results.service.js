@@ -58,7 +58,7 @@ class Results{
         newData.img=files.img[0].path
       }
       const updateOne = await db
-      .collection('events')
+      .collection('results')
       .updateOne(
         {_id: new ObjectId(id)},
         {$set:newData}

@@ -74,6 +74,18 @@ router.get('/search/pending/resendmail',async(req,res,next)=>{
     next(error);
   }
 });
+router.get('/modify/pending/abreviations',async(req,res,next)=>{
+
+  try {
+    const register = await registro.modifyAbr();
+    res.status(200).json({
+      success:true,
+      data:register
+    })
+  } catch (error) {
+    next(error);
+  }
+});
 router.delete('/:id',async(req,res,next)=>{
   try {
     const user = await registro.delete(req.params.id);

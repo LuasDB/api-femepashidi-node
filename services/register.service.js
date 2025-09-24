@@ -368,6 +368,79 @@ class Register{
       throw Boom.badImplementation('Somethink was wrong! ')
     }
   }
+  async resendMail(){
+    try {
+      const pending = await db.collection('register').find(
+        {
+          'event.nombre':'1st INDEPENDENCE OPEN CHAMPIONSHIP 2025',
+          status:'Preinscrito',
+          fecha_solicitud:{
+            $gte:'2025-08-24',
+            $lte:'2025-08-28'
+          }
+        }
+      ).toArray()
+
+      let serverUrl = config.server;
+      if (!/^https?:\/\//.test(serverUrl)) {
+        serverUrl = 'https://' + serverUrl;
+      }
+
+      const send = await Promise.all(pending.forEach(async(item)=>{
+        const emailAssociation = await sendMail({
+        from: config.emailSupport,
+        to: item.association.correo,
+        subject: 'Inscripción de participante a competencia',
+        data: {
+          association: item.association.nombre,
+          name: item.association.representante,
+          nameSkater: `${item.user.nombre} ${item.user.apellido_paterno} ${item.user.apellido_materno}`,
+          nameEvent: item.event.nombre,
+          curp: item.user.curp,
+          dateStart: item.event.fecha_inicio,
+          dateEnd: item.event.fecha_fin,
+          level: item.nivel_actual,
+          category: item.categoria,
+          id: item._id,
+          server: serverUrl,
+        },
+        templateEmail: 'InscripcionSkaterAsociation',
+        attachments: [
+          {
+            filename: 'encabezado',
+            path: path.join('emails/encabezado.png'),
+            cid: 'encabezado',
+          },
+          {
+            filename: 'ACEPTAR',
+            path: path.join('emails/ACEPTAR.png'),
+            cid: 'aceptar',
+          },
+          {
+            filename: 'RECHAZAR',
+            path: path.join('emails/RECHAZAR.png'),
+            cid: 'rechazar',
+          },
+        ],
+        });
+
+      if (emailAssociation.success) {
+        console.log('[Enviado]',item.association.abreviacion)
+      } else {
+        throw Boom.badGateway('No se logró entregar el mail');
+      }
+      }))
+
+      return pending
+    } catch (error) {
+      if(Boom.isBoom(error)){
+        throw error
+      }
+      throw Boom.badImplementation('Somethink was wrong! ')
+    }
+  }
+
+
 
 }
 
