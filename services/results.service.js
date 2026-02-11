@@ -53,10 +53,16 @@ class Results{
 
   async updateOne(id,newData,files){
     try {
+      const results = await db.collection('results').findOne({_id:ObjectId(newData._id)})
+      const imgOldPath = results.img
+
+
+
       delete newData._id
       if(files){
         newData.img=files.img[0].path
       }
+
       const updateOne = await db
       .collection('results')
       .updateOne(

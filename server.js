@@ -20,22 +20,22 @@ const app = express()
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDoc))
-//Ejecutamos CORS, primero crearemos las url a las que le daremos acceso
-  // const whitelist = ['http://localhost:3000','http://127.0.0.1'];
-  // const options ={
-  //   origin: (origin,callback)=>{
-  //     if(whitelist.includes(origin) || !origin){
-  //       callback(null,true);
-  //     }else{
-  //       callback(new Error('No permitido'));
-  //     }
-  //   }
-  // }
+// Ejecutamos CORS, primero crearemos las url a las que le daremos acceso
+  const whitelist = ['http://localhost:3000','http://127.0.0.1',`${process.env.URL_APP}`];
+  const options ={
+    origin: (origin,callback)=>{
+      if(whitelist.includes(origin) || !origin){
+        callback(null,true);
+      }else{
+        callback(new Error('No permitido'));
+      }
+    }
+  }
 
-// app.use(cors(options));
+app.use(cors(options));
 
 // para todas las url
-app.use(cors())
+// app.use(cors())
 //Socket.io
 const httpServer = createServer(app)
 const io = new Server(httpServer, {
