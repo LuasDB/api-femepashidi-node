@@ -4,6 +4,7 @@ import path from 'path'
 import config from './../config.js'
 
 const sendMail = async({from, to, subject, data, templateEmail, attachments = []}) => {
+  console.log('Dentro de los correos')
   const transporter = nodemailer.createTransport({
     host: config.hostEmailSupport,
     port: config.portEmailSupport,

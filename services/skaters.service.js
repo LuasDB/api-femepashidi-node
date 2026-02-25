@@ -26,6 +26,7 @@ class Skaters{
       const result = await db.collection('skaters').insertOne(newSkater)
 
       if(result.insertedId){
+        console.log('Enviando correos...')
         const emailSkater = await sendMail({
           from:config.emailSupport,
           to:data.correo,
