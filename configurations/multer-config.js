@@ -19,7 +19,15 @@ const storageConfig = (collection)=>{
   })
 }
 const upload = (collection)=>{
-  return multer({storage:storageConfig(collection)})
+  const options = { storage: storageConfig(collection) }
+  if(collection === 'gallery'){
+    // La galería acepta fotos y videos, nada más
+    options.fileFilter = (req, file, cb) => {
+      const esImagenOVideo = file.mimetype.startsWith('image/') || file.mimetype.startsWith('video/')
+      cb(null, esImagenOVideo)
+    }
+  }
+  return multer(options)
 }
 
 export default upload

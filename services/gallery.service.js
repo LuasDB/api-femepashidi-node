@@ -11,6 +11,8 @@ class Gallery{
       if(!data || !files || files.length === 0){
         throw Boom.badRequest('Invalid data or files')
       }
+      // Solo existe una galería vigente: se reemplaza por completo en cada subida
+      await db.collection('gallery').deleteMany({})
       const create = await db.collection('gallery').insertOne({
         ...data,fotos:files
       })
@@ -31,7 +33,7 @@ class Gallery{
 
   async getGallery(){
     try {
-      return await db.collection('gallery').find().toArray()
+      return await db.collection('gallery').findOne()
     } catch (error) {
       if(Boom.isBoom(error)){
         throw error}

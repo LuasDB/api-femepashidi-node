@@ -22,6 +22,7 @@ router.post('/',deleteGallery,upload('gallery').any(),async(req,res,next)=>{
 
 router.get('/',async(req,res,next)=>{
   try {
+    console.log('Entrando a get')
     const getGallery = await gallery.getGallery()
     res.status(201).json({
       success: true,
